@@ -42,7 +42,8 @@ void moveBall(){
   ball_tempY = ball_y;
 
   if (dir == 1 && ball_x > XMIN && ball_y > YMIN){
-    if( ball_x + 1 == p2_x && (ball_y >= p2_y - 1) && (ball_y <= p2_y + 1)){
+    //if( ball_x + 1 == p2_x && (ball_y >= p2_y - 1) && (ball_y <= p2_y + 1)){
+    if( ball_x + 1 == p2_x && (ball_y >= p2_y ) && (ball_y <= p2_y + 2)){
       dir = random(2) + 3;
     }
     else{    
@@ -52,8 +53,8 @@ void moveBall(){
 
   } 
   else if (dir == 2 && ball_x > XMIN && ball_y < YMAX){
-
-    if( ball_x + 1 == p2_x  && (ball_y >= p2_y - 1)&& (ball_y <= p2_y + 1)){
+    //if( ball_x + 1 == p2_x  && (ball_y >= p2_y - 1)&& (ball_y <= p2_y + 1)){
+    if( ball_x + 1 == p2_x  && (ball_y >= p2_y - 2)&& (ball_y <= p2_y )){
       dir = random(2) + 3;
     }
     else{    
@@ -63,7 +64,8 @@ void moveBall(){
 
   } 
   else if (dir == 3 && ball_x > XMIN && ball_y > YMIN){
-    if( (ball_x == p1_x + 1) && (ball_y >= p1_y - 1) && ( ball_y <= p1_y + 1)){
+    //if( (ball_x == p1_x + 1) && (ball_y >= p1_y - 1) && ( ball_y <= p1_y + 1)){
+    if( (ball_x == p1_x + 1) && (ball_y >= p1_y ) && ( ball_y <= p1_y + 2)){
       dir = random(2) + 1;
     }
     else{    
@@ -73,7 +75,8 @@ void moveBall(){
 
   } 
   else if (dir == 4 && ball_x < XMAX && ball_y < YMAX){
-    if( (ball_x  == p1_x+ 1) && (ball_y >= p1_y - 1) && (ball_y <= p1_y + 1)){
+    //if( (ball_x  == p1_x+ 1) && (ball_y >= p1_y - 1) && (ball_y <= p1_y + 1)){
+    if( (ball_x  == p1_x+ 1) && (ball_y >= p1_y - 2) && (ball_y <= p1_y)){
       dir = random(2) + 1;
     }
     else{    
@@ -100,11 +103,10 @@ void moveBall(){
 void p1Move(){
   p1_tempY = p1_y;
 
-  // computer controlled
-  //  p1_y = ball_y;
-
-  // player controlled
-  p1_y = analogRead(5) * 6 / 1024;
+  if (LCD_P2_AUTO)
+    p1_y = ball_y; // computer controlled
+  else
+    p1_y = analogRead(5) * 6 / 1024; // player controlled
 
   if      (p1_y <= YMIN) p1_y = YMIN + 1;
   else if (p1_y >= YMAX) p1_y = YMAX - 1;
@@ -116,11 +118,10 @@ void p1Move(){
 void p2Move(){
   p2_tempY = p2_y;
 
-  // computer controlled
-  //p2_y = ball_y;
-
-  // player controlled
-  p2_y = analogRead(4) * 6 / 1024;
+  if (LCD_P1_AUTO)
+    p2_y = ball_y; // computer controlled
+  else
+    p2_y = analogRead(4) * 6 / 1024; // player controlled
 
   if      (p2_y <= YMIN) p2_y = YMIN + 1;
   else if (p2_y >= YMAX) p2_y = YMAX - 1;
@@ -159,15 +160,23 @@ void startNew(){
 void checkWin(){
 
   if ( ball_x <= p1_x){
-    Serial.println("Player 2 Wins!");
+    //Serial.println("Player 2 Wins!");
     string_group.fill_color(0,70,255, COLOR_BLUE);
     delay(250);
+    if (p2_score < 99) p2_score++; else p1_score = p2_score = 0;
+    
+  printScore();
     startNew();
   } 
   else if ( ball_x >= p2_x){
-    Serial.println("Player 1 Wins!"); 
+    //Serial.println("Player 1 Wins!"); 
     string_group.fill_color(0,70,255, COLOR_RED);
     delay(250);
+    if (p1_score < 99) p1_score++; else p1_score = p2_score = 0;
+    
+    
+  printScore();
+    
     startNew();
   }    
 

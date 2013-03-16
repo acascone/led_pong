@@ -1,10 +1,30 @@
 #include <G35String.h>
 #include <G35StringGroup.h>
+#include <SoftwareSerial.h>
+
+#define PONG_LOOP_RATE 8
+#define WAIT_MS (1000/PONG_LOOP_RATE)
+
+#define LCD_P1_AUTO  1
+#define LCD_P2_AUTO  0
 
 // Standard Arduino, string 1 on Pin 13, string 2 on Pin 12.
 G35String lights_1(8, 35);
 G35String lights_2(7, 35);
 G35StringGroup string_group;
+
+unsigned char p1_score;
+unsigned char p2_score;
+
+SoftwareSerial LCD(2,3);
+char line2[17];
+
+void printScore() {
+    LCD.write(148); // move to line 1 pos 0
+  memset(line2,0,sizeof(line2));
+  sprintf(line2,"%02d            %02d", p2_score,p1_score);
+  LCD.print(line2);
+}
 
 #include "pong.h"
 #include "led_utils.h"
@@ -23,34 +43,18 @@ void setup() {
   
   // pong setup
   setupGame();
+  
+  LCD.begin(9600);
+  delay(100);
+  LCD.write(12); // Form Feed, clear screen
+  delay(100);
+  LCD.print("P1    PONG    P2");
+  delay(100);
+
+  printScore();
 }
 
 void loop() {
-  static bool mode = 1;
-  static int counter;
-  if (mode == 0) {
-    clearscreen();
-    scroll_text("Maker Faire",COLOR_RED);
-    scroll_text("Detroit",COLOR_BLUE);
-    scroll_text("HackPGH",COLOR_YELLOW);
-    mode = 1;
-  }
-  else { 
     playPong(true);
-    delay(20);
-    playPong(false);
-    delay(20);
-    playPong(false);
-    delay(20);
-    playPong(false);
-    delay(20);
-    playPong(false);
-    delay(20);
-    if (counter > 60*10) {
-      counter = 0;
-      // mode = 0;
-    } else {
-      counter++;
-    }
-  }
+    delay(WAIT_MS);
 }
