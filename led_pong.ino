@@ -6,7 +6,7 @@
 #define WAIT_MS (1000/PONG_LOOP_RATE)
 
 #define LCD_P1_AUTO  1
-#define LCD_P2_AUTO  0
+#define LCD_P2_AUTO  1
 
 // Standard Arduino, string 1 on Pin 13, string 2 on Pin 12.
 G35String lights_1(8, 35);
