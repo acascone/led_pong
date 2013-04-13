@@ -1,3 +1,7 @@
+// led_pong.ino
+// Author: Anthony Cascone
+// HackPittsburgh
+
 #include <G35String.h>
 #include <G35StringGroup.h>
 #include <SoftwareSerial.h>
