@@ -58,6 +58,7 @@ void setup() {
   printScore();
 }
 
+// This is the main loop, where the magic happens
 void loop() {
     playPong(true);
     delay(WAIT_MS);
